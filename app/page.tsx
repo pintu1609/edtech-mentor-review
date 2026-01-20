@@ -1,65 +1,140 @@
-import Image from "next/image";
+"use client";
+import { useLogin } from "@/frontend/hooks/user";
+import { BeatLoader } from "react-spinners";
+import { useFormik } from "formik";
+import { initialLogin, loginValidationSchema } from "@/frontend/frontValidation";
+import toast from "react-hot-toast";
+import { toFormikValidationSchema } from 'zod-formik-adapter';
+import { useRouter } from "next/navigation";
+import { useCookies } from 'next-client-cookies';
+
+
+
 
 export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+  const router = useRouter();
+  const cookies = useCookies();
+
+
+  const { mutateAsync, isPending } = useLogin();
+  const { values, errors, touched, handleBlur, handleChange, handleSubmit, resetForm } = useFormik({
+    initialValues: initialLogin,
+    validationSchema: toFormikValidationSchema(loginValidationSchema),
+    onSubmit: async () => {
+
+      try {
+        const success = await mutateAsync(values);
+        console.log("🚀 ~ Home ~ success:", success)
+        if (success) {
+
+          toast.success(success.message ?? "Login successful !!");
+
+          if (success.status === 201) {
+            resetForm();
+            cookies.set('accessToken', success?.token)
+
+            localStorage.setItem('name', success?.data?.name)
+            if (success?.data?.role === "admin") {
+              router.push("/dashboard/admin");
+            } else if (success?.data?.role === "mentor") {
+              router.push("/dashboard/mentor");
+            } else if (success?.data?.role === "student") {
+              router.push("/dashboard/student");
+            }
+
+          } else {
+            toast.error("Invalid credentials");
+          }
+        }
+        } catch (error) {
+          console.error("Error during login:", error);
+          toast.error("Login failed. Try again.");
+        }
+      },
+    });
+ return (
+  <div className="flex min-h-[calc(100vh-60px)] items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4">
+    <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
+      
+      {/* Header */}
+      <div className="mb-8 text-center">
+        <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+          Welcome Back 👋
+        </h2>
+        <p className="mt-2 text-sm text-gray-500">
+          Sign in to continue to your dashboard
+        </p>
+      </div>
+
+      {/* Form */}
+      <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+        
+        {/* Email */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-semibold text-gray-700">
+            Email address
+          </label>
+          <input
+            type="text"
+            name="email"
+            placeholder="you@example.com"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.email}
+            className={`w-full rounded-lg border px-4 py-2.5 text-gray-900 placeholder-gray-400 transition
+              focus:outline-none focus:ring-none
+              ${
+                errors.email && touched.email
+                  ? "border-red-500 focus:ring-red-400"
+                  : "border-gray-300"
+              }`}
+          />
+          {errors.email && touched.email && (
+            <p className="text-xs font-medium text-red-500">
+              {errors.email}
+            </p>
+          )}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Password */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-semibold text-gray-700">
+            Password
+          </label>
+          <input
+            type="password"
+            name="password"
+            placeholder="••••••••"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.password}
+            className={`w-full rounded-lg border px-4 py-2.5 text-gray-900 placeholder-gray-400 transition
+              focus:outline-none focus:ring-none
+              ${
+                errors.password && touched.password
+                  ? "border-red-500 focus:ring-red-400"
+                  : "border-gray-300"
+              }`}
+          />
+          {errors.password && touched.password && (
+            <p className="text-xs font-medium text-red-500">
+              {errors.password}
+            </p>
+          )}
         </div>
-      </main>
+
+        {/* Button */}
+        <button
+          type="submit"
+          disabled={isPending}
+          className="mt-2 flex h-11 items-center justify-center rounded-lg bg-purple-600 font-semibold text-white transition
+            hover:bg-purple-700 active:scale-[0.98] disabled:opacity-60"
+        >
+          {isPending ? <BeatLoader size={8} color="#fff" /> : "Sign In"}
+        </button>
+      </form>
     </div>
-  );
+  </div>
+);
+
 }
