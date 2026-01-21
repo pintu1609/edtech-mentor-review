@@ -1,5 +1,5 @@
 import { User } from "@/backend/model/auth/auth";
-import { create, findOne } from "@/backend/lib/dal/dal";
+import { create, findOne,find } from "@/backend/lib/dal/dal";
 import bcrypt from "bcryptjs";
 import { generateToken } from "@/backend/lib/helper";
 
@@ -57,4 +57,9 @@ export const login = async (user: interfaceLogin) => {
   };
 
   return userResponse;
+};
+
+export const getAllMentors = async () => {
+  const mentors = await find(User, { role: "mentor" });
+  return mentors;
 };

@@ -77,36 +77,35 @@ const useRegister = () => {
   });
 };
 
-// const fetchAllUser = async () => {
-//   const { data } = await axiosInstance({
-//     method: "get",
-//     url: ENDPOINTS.GET_ALL_USER,
-//     headers: { "Content-Type": "application/json" },
-//   });
-//   const statusSchema = z.number().optional();
-//   const messageSchema = z.string().optional();
-//   const status = statusSchema.parse(data.status);
-//   const message = messageSchema.parse(data.message);
+const fetchAllMentor = async () => {
+  const { data } = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.GETALLMENTOR,
+    headers: { "Content-Type": "application/json" },
+  });
+  const statusSchema = z.number().optional();
+  const messageSchema = z.string().optional();
+  const status = statusSchema.parse(data.status);
+  const message = messageSchema.parse(data.message);
 
-//   const dataSchema = z.object({
-//     _id: z.union([z.string(), z.number()]),
-//     name: z.string(),
-//     email: z.string(),
-//     phone: z.string(),
-//     role: z.string(),
-//   });
+  const dataSchema = z.object({
+    _id: z.string(),
+    name: z.string(),
+    email: z.string(),
+    role: z.string(),
+  });
 
-//   const userData = z.array(dataSchema);
-//   const retData = userData.parse(data.data);
-//   return { status, message, data: retData };
-// };
+  const userData = z.array(dataSchema);
+  const retData = userData.parse(data.data);
+  return { status, message, data: retData };
+};
 
-// const useGetAllUser = () => {
-//   return useQuery({
-//     queryKey: ["useGetAllUser"],
-//     queryFn: () => fetchAllUser(),
-//   });
-// };
+const useGetAllMentor = () => {
+  return useQuery({
+    queryKey: ["useGetAllMentor"],
+    queryFn: () => fetchAllMentor(),
+  });
+};
 
 // const updateRegisterUser = async (params: UpdateRegisterUser) => {
 //   const { data } = await axiosInstance({
@@ -169,6 +168,7 @@ const useRegister = () => {
 export {
   useLogin,
   useRegister,
+  useGetAllMentor,
 //   useGetAllUser,
 //   useUpdateRegisterUser,
 //   useDeleteRegisterUser,

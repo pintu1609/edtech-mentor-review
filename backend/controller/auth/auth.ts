@@ -1,5 +1,5 @@
 import { connectToDatabase } from "@/backend/lib/db";
-import { createuser, login } from "@/backend/service/auth/auth";
+import { createuser, login,getAllMentors } from "@/backend/service/auth/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { loginSchema, userSchema } from "@/backend/validation/auth/auth";
 
@@ -43,5 +43,16 @@ export const userLogin = async (req: NextRequest) => {
     } else {
       // handle unknown error type
     }
+  }
+};
+
+
+export const allMentor = async () => {
+  try {
+    await connectToDatabase();
+    const mentors = await getAllMentors();
+    return NextResponse.json({ status: 201, data: mentors , message: "Mentors fetched successfully" });
+  } catch (error) {
+    console.log(error);
   }
 };
