@@ -1,6 +1,6 @@
-import { getStats } from "@/backend/controller/admin/admin";
+import { getMentors } from "@/backend/controller/admin/admin";
 
 
 export async function GET() {
-  return getStats();
+  return getMentors();
 }

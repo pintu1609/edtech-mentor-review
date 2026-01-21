@@ -12,7 +12,16 @@ export const getAssignments = () => Assignment.find().populate({
   { path: "createdBy", select: "-password",});
 
 export const getSubmissions = () =>
-  Submission.find().populate("studentId mentorId assignmentId");
+  // Submission.find().populate("studentId mentorId assignmentId");
+  Submission.find().populate({
+    path: "studentId",
+    select: "-password",
+  }).populate({
+    path: "mentorId",
+    select: "-password",
+  }).populate({
+    path: "assignmentId",
+  });
 
 export const getStats = async () => ({
   assignments: await Assignment.countDocuments(),

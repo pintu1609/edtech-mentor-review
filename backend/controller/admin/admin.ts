@@ -45,11 +45,52 @@ export const getAssignments = async () =>{
 };
 
 
-export const getSubmissions = async () =>
-  NextResponse.json(await service.getSubmissions());
+export const getSubmissions = async () =>{
+  try
+  {
+    await connectToDatabase();
+    const result =await service.getSubmissions();
+    return NextResponse.json({
+      status: 201,
+      message: "Submissions fetched successfully",
+      data: result
+    })
+
+  }
+  catch(error)
+  {
+    console.log(error);
+    return NextResponse.json(
+      {
+        message: "Failed to fetch assignments",
+      },
+      { status: 500 }
+    )
+  }
+}
 
 export const getStats = async () =>
   NextResponse.json(await service.getStats());
 
-export const getMentors = async () =>
-  NextResponse.json(await service.getMentors());
+export const getMentors = async () =>{
+  try
+  {
+    await connectToDatabase();
+    const result = await service.getMentors()
+    return NextResponse.json({
+      status: 201,
+      message: "Mentors fetched successfully",
+      data: result
+    })
+  }
+  catch(error)
+  {
+    console.log(error);
+    return NextResponse.json(
+      {
+        message: "Failed to fetch assignments",
+      },
+      { status: 500 }
+    )
+  }
+}
