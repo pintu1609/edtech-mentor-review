@@ -1,17 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCookies } from "next-client-cookies";
+
 
 export default function Footer() {
   const pathname = usePathname();
   const cookies = useCookies();
+  const router = useRouter();
 
   const isLoggedIn = Boolean(cookies.get("accessToken"));
 
   const showLogin = pathname === "/register";
   const showRegister = pathname === "/";
+
+    const handleLogout = () => {
+    cookies.remove("accessToken");
+    router.push("/");
+    router.refresh(); // ensures middleware re-check
+  };
 
   return (
     <footer className="w-full bg-gradient-to-r from-purple-50 to-indigo-50 border-t px-6 py-4">
@@ -58,6 +66,15 @@ export default function Footer() {
             >
               Register
             </Link>
+          )}
+
+          {isLoggedIn && (
+            <button
+              onClick={handleLogout}
+              className="rounded-md border border-red-500 px-4 py-1.5 text-sm font-medium text-red-500 hover:bg-red-500 hover:text-white transition"
+            >
+              Logout
+            </button>
           )}
         </div>
 
