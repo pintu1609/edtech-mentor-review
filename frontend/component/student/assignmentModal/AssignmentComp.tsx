@@ -1,51 +1,30 @@
 "use client";
-import { useSubmitAssignment } from "@/frontend/hooks/student";
 import { BeatLoader } from "react-spinners";
-import { useFormik } from "formik";
-import { initalStudentSubmission, studentSubmissionValidationSchema } from "@/frontend/frontValidation";
-import toast from "react-hot-toast";
-import { toFormikValidationSchema } from 'zod-formik-adapter';
 
-export default function SubmitAssignmentModal({
+export default function AssignmentComp({
   open,
-  assignmentId,
   onClose,
-}: any) {
+  handleSubmit,
+  handleChange,
+  handleBlur,
+  values,
+  errors,
+  touched,
+  isPending
+  
+}: {
+  open: boolean;
+  onClose: () => void;
+  handleSubmit: () => void;
+  handleChange: (e: any) => void;
+  handleBlur: (e: any) => void;
+  values: any;
+  errors: any;
+  touched: any;
+  isPending: boolean
+}) {
 
   if (!open) return null;
-
-const { mutateAsync, isPending } = useSubmitAssignment();
-  
-  const { values, errors, touched, handleBlur, handleChange, handleSubmit, resetForm } = useFormik({
-    initialValues: initalStudentSubmission,
-    validationSchema: toFormikValidationSchema(studentSubmissionValidationSchema),
-    onSubmit: async () => {
-
-      try {
-        const data = {
-          assignmentId: assignmentId,
-          content: values.content
-        }
-        const success = await mutateAsync(data);
-        console.log("🚀 ~ Home ~ success:", success)
-        if (success) {
-
-          toast.success(success.message ?? "Submission successful !!");
-
-          if (success.status === 201) {
-            resetForm();
-            onClose();
-
-          } else {
-            toast.error("something went wrong");
-          }
-        }
-        } catch (error) {
-          console.error("Error during login:", error);
-          toast.error("assignment failed. Try again.");
-        }
-      },
-    });
 
 
   return (

@@ -1,4 +1,5 @@
 import { getSubmissions } from "@/backend/service/admin/admin"
+import { updateSubmission } from "@/backend/service/student/student"
 
 const ENDPOINTS = {
     REGISTER: "/api/user/register",
@@ -15,6 +16,7 @@ const ENDPOINTS = {
     SUBMITASSIGNMENT:"/api/student/submit",
     STUDENTSUBMISSION:"/api/student/submissions",
     STUDENTSTATS:"/api/student/stats",
+    UPDATESUBMISION:"/api/student/submit/",
 
     // MENTOR
     GETMENTORSUBMISSION:"/api/mentor/submissions",

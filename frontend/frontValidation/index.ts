@@ -1,3 +1,4 @@
+import { init } from "next/dist/compiled/webpack/webpack";
 import { title } from "process";
 import { z } from "zod";
 import { de } from "zod/locales";
@@ -43,4 +44,15 @@ const studentSubmissionValidationSchema = z.object({
     content: z.string().min(3).max(300).nonempty("Content is required"),
 })
 
-export {initialLogin, loginValidationSchema, initialRegister, registerValidationSchema, initialAssignment, assignmentValidationSchema, initalStudentSubmission, studentSubmissionValidationSchema}
+const initialAssignmentMentorReview = {
+    feedback:"",
+    score:0
+}
+const assignmentMentorReviewValidationSchema = z.object({
+    feedback: z.string().min(3).max(300).nonempty("Feedback is required"),
+    score:z.number().min(0).max(100),
+})
+
+export {initialLogin, loginValidationSchema, initialRegister, registerValidationSchema, initialAssignment, assignmentValidationSchema, initalStudentSubmission, studentSubmissionValidationSchema,
+    initialAssignmentMentorReview, assignmentMentorReviewValidationSchema
+}

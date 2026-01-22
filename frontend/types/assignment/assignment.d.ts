@@ -25,3 +25,17 @@ export interface studentSubmitAssignmentParams {
   assignmentId: string;
   content: string;
 }
+
+export interface studentUpdateAssignmentParams {
+  id: string;
+  data: {
+    assignmentId: string;
+    content: string;  
+  }
+}
+
+export interface mentorReviewSubmissionParams {
+  feedback: string;
+    score: number;
+    submissionId: string;
+}

@@ -2,10 +2,10 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/frontend/service/axios";
 import ENDPOINTS from "@/frontend/service/endpoint";
 import { z } from "zod";
-import {  studentSubmitAssignmentParams } from "../types/assignment/assignment";
+import {  studentSubmitAssignmentParams, studentUpdateAssignmentParams } from "../types/assignment/assignment";
 
 
-// login api call (POST WITH DATA)---
+// submission api call (POST WITH DATA)---
 const submitAssignment = async (params: studentSubmitAssignmentParams
 ) => {
   const { data } = await axiosInstance({
@@ -15,6 +15,7 @@ const submitAssignment = async (params: studentSubmitAssignmentParams
     headers: {
       "Content-Type": "application/json",
     },
+    
   });
 
   console.log(data);
@@ -33,8 +34,11 @@ const submitAssignment = async (params: studentSubmitAssignmentParams
     _id: z.string(),
    
   });
+  if (data.status === 400) {
+    return { status, message };
+  }
 
-  const retData = dataSchema.parse(data.data);
+  const retData = dataSchema.parse(data?.data);
 
   return { status, message, data: retData, };
 };
@@ -47,8 +51,6 @@ const useSubmitAssignment = () => {
 };
 
 // get all assignment
-
-
 
 const fetchStudentAllAssignments = async () => {
   const { data } = await axiosInstance({
@@ -68,12 +70,14 @@ const dataSchema = z.object({
   description: z.string(),
   dueDate: z.string(),
   metor: z.string().optional(),
+  assignmentsStatus:z.string()
+  
   
 });
 
 const userData = z.array(dataSchema);
-  const retData = userData.parse(data.data);
-  return { status, message, data: retData };
+  const retData = userData.parse(data.data.data);
+  return { status, message, data: retData,length:data.data.length };
 };
 
 const useStudentAllAssignments = () => {
@@ -86,8 +90,6 @@ const useStudentAllAssignments = () => {
 
 
 // student submission
-
-
 
 const fetchStudentSubmission = async () => {
   const { data } = await axiosInstance({
@@ -103,13 +105,19 @@ const fetchStudentSubmission = async () => {
   
 const dataSchema = z.object({
   _id: z.string(),
-  assignmentId: z.object({
-  _id: z.string(),
+  assignmentId: z.string(),
+  assignment: z.object({
+    _id: z.string(),
   title: z.string(),
   description: z.string(),
-  dueDate: z.string(),
-  createdBy: z.string().optional(),
+  dueDate: z.string(), 
+  assignmentsStatus:z.string()
   
+}),
+mentor:z.object({
+  _id: z.string(),
+  name: z.string(),
+  email: z.string(),
 }),
   studentId: z.string(),
   content: z.string(),
@@ -119,8 +127,8 @@ const dataSchema = z.object({
 });
 
 const userData = z.array(dataSchema);
-  const retData = userData.parse(data.data);
-  return { status, message, data: retData };
+  const retData = userData.parse(data.data.data);
+  return { status, message, data: retData,length:data.data.length };
 };
 
 const useStudentSubmission = () => {
@@ -160,4 +168,45 @@ const useStudentStats = () => {
   });
 };
 
-export { useStudentStats, useSubmitAssignment,useStudentAllAssignments, useStudentSubmission };
+// update assignment
+
+
+const updateAssignment = async (params: studentUpdateAssignmentParams) => {
+  const { data } = await axiosInstance({
+    method: "put",
+    url: `${ENDPOINTS.UPDATESUBMISION}${params.id}`,
+    data: params.data,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const statusSchema = z.number().optional();
+  const messageSchema = z.string().optional();
+  const status = statusSchema.parse(data.status);
+  const message = messageSchema.parse(data.message);
+    const dataSchema = z.object({
+    assignmentId: z.string(),
+    studentId: z.string(),
+    content: z.string(),
+    status: z.string(),
+    _id: z.string(),
+   
+  });
+  if (data.status === 400) {
+    return { status, message };
+  }
+
+  const retData = dataSchema.parse(data.data);
+
+  return { status, message, data: retData };
+};
+
+const useUpdateAssignment = () => {
+  return useMutation({
+    mutationKey: ["useUpdateAssignment"],
+    mutationFn: (params: studentUpdateAssignmentParams) => updateAssignment(params),
+  });
+};
+
+export { useStudentStats, useSubmitAssignment,useStudentAllAssignments, useStudentSubmission,useUpdateAssignment };

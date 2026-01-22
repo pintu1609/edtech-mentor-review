@@ -34,12 +34,19 @@ export const review = async (req: NextRequest) => {
      const user = verifyToken(req, ["mentor"]);
 
   const body = await req.json();
+  console.log("🚀 ~ review ~ body:", body)
   const result = await service.review(user.id, body);
+  if (!result.success) {
+    return NextResponse.json(
+      { message: result.message, status: 400 },
+      { status: 400 }
+    );
+  }
 
   return NextResponse.json({
     status: 201,
     message: "Review submitted successfully",
-    data: result
+    data: result.data
   })
   } catch (error) {
     console.log(error);

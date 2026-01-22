@@ -2,35 +2,56 @@
 import { useState } from "react";
 import ReviewSubmissionModal from "./ReviewSubmissionModal";
 import { useMentorAllAssignments } from "@/frontend/hooks/mentor";
+import { ClipLoader } from "react-spinners";
+import ViewSubmissionModal from "./ViewSubmissionModal";
 
 export default function AssignedSubmissions() {
-  const { data } = useMentorAllAssignments();
+  const { data, isPending, refetch:mentorRefetch } = useMentorAllAssignments();
   const [open, setOpen] = useState(false);
   const [submission, setSubmission] = useState<any>(null);
+    const [openView, setOpenView] = useState(false);
+
 
   return (
     <>
       <div className="backdrop-blur-xl bg-white/70 rounded-2xl p-5 shadow-lg border">
         <h3 className="font-semibold mb-3">Assigned Submissions</h3>
 
+
+          {isPending ? (
+            <div className="flex justify-center">
+              <ClipLoader size={50}/>
+            </div>
+          ):(
+            (data?.length > 0)?(
+              
+           
         <table className="w-full text-sm">
           <thead className="text-gray-500">
             <tr>
+              <th>S.no</th>
               <th>Student</th>
               <th>Assignment</th>
+              <th>Due Date</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
 
           <tbody>
-            {data?.data?.map((s: any) => (
+            {data?.data?.map((s: any, index: number) => (
               <tr key={s._id} className="border-t h-12 text-center">
+                <td>{index + 1} </td>
                 <td>{s.studentId.name}</td>
                 <td>{s.assignmentId.title}</td>
+                <td>{new Date(s.assignmentId.dueDate).toLocaleDateString("en-IN", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}</td>
                 <td>{s.status}</td>
                 <td>
-                  {s.status === "submitted" && (
+                  {s.status === "submitted" ? (
                     <button
                       onClick={() => {
                         setSubmission(s);
@@ -40,19 +61,51 @@ export default function AssignedSubmissions() {
                     >
                       Review
                     </button>
+                  ):(
+                    <button
+                      onClick={() => {
+                        setSubmission(s);
+                        setOpenView(true);
+                      }}
+                      className="px-3 py-1 text-xs rounded bg-indigo-600 text-white"
+                    >
+                      View
+                    </button>
                   )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+         ):(
+          <div className="flex justify-center">
+            <h1>No Submissions</h1>
+          </div>
+         )
+          )}
       </div>
+
+{ open && submission && (
+  
 
       <ReviewSubmissionModal
         open={open}
         submission={submission}
         onClose={() => setOpen(false)}
+        mentorRefetch={mentorRefetch}
       />
+      )}
+
+      {submission && openView && (
+        <ViewSubmissionModal
+          open={openView}
+          submission={submission}
+          onClose={() => setOpenView(false)}
+        />
+      )}
+      
     </>
+
+    
   );
 }

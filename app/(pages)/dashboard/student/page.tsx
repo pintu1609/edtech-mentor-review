@@ -7,7 +7,6 @@ import { useStudentStats } from "@/frontend/hooks/student";
 
 export default function StudentDashboard() {
   const { data } = useStudentStats();
-  console.log("🚀 ~ StudentDashboard ~ data:", data)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 p-6 space-y-6">
