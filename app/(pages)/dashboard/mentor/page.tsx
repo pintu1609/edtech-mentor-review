@@ -13,7 +13,7 @@ export default function MentorDashboard() {
       <h2 className="text-center text-3xl text-bold">Mentor Dashboard</h2>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard title="Assigned" value={data?.data?.totalAssignments ?? 0} icon="📘" />
         <StatCard title="Total Submissions" value={data?.data?.totalSubmissions ?? 0} icon="📄" />
 
