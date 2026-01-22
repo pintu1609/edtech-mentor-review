@@ -60,7 +60,7 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name */}
-        <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <label className="block text-sm font-semibold text-gray-700 mb-1">
               Name
             </label>
@@ -71,19 +71,18 @@ export default function Register() {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.name}
-              className={`${inputBase} ${
-                errors.name && touched.name ? errorBorder : normalBorder
-              }`}
+              className={`${inputBase} ${errors.name && touched.name ? errorBorder : normalBorder
+                }`}
             />
             {errors.name && touched.name && (
-            <p className="text-xs font-medium text-red-500">
-              {errors.name}
-            </p>
-          )}
+              <p className="text-xs font-medium text-red-500">
+                {errors.name}
+              </p>
+            )}
           </div>
 
           {/* Email */}
-        <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <label className="block text-sm font-semibold text-gray-700 mb-1">
               Email
             </label>
@@ -94,19 +93,18 @@ export default function Register() {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.email}
-              className={`${inputBase} ${
-                errors.email && touched.email ? errorBorder : normalBorder
-              }`}
+              className={`${inputBase} ${errors.email && touched.email ? errorBorder : normalBorder
+                }`}
             />
             {errors.email && touched.email && (
-            <p className="text-xs font-medium text-red-500">
-              {errors.email}
-            </p>
-          )}
+              <p className="text-xs font-medium text-red-500">
+                {errors.email}
+              </p>
+            )}
           </div>
 
           {/* Password */}
-        <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <label className="block text-sm font-semibold text-gray-700 mb-1">
               Password
             </label>
@@ -117,21 +115,20 @@ export default function Register() {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.password}
-              className={`${inputBase} ${
-                errors.password && touched.password
+              className={`${inputBase} ${errors.password && touched.password
                   ? errorBorder
                   : normalBorder
-              }`}
+                }`}
             />
             {errors.password && touched.password && (
-            <p className="text-xs font-medium text-red-500">
-              {errors.password}
-            </p>
-          )}
+              <p className="text-xs font-medium text-red-500">
+                {errors.password}
+              </p>
+            )}
           </div>
 
           {/* Role */}
-        <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <label className="block text-sm font-semibold text-gray-700 mb-1">
               Role
             </label>
@@ -140,9 +137,8 @@ export default function Register() {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.role}
-              className={`${inputBase} ${
-                errors.role && touched.role ? errorBorder : normalBorder
-              }`}
+              className={`${inputBase} ${errors.role && touched.role ? errorBorder : normalBorder
+                }`}
             >
               <option value="">Select a role</option>
               <option value="admin">Admin</option>
@@ -150,10 +146,10 @@ export default function Register() {
               <option value="student">Student</option>
             </select>
             {errors.role && touched.role && (
-            <p className="text-xs font-medium text-red-500">
-              {errors.role}
-            </p>
-          )}
+              <p className="text-xs font-medium text-red-500">
+                {errors.role}
+              </p>
+            )}
           </div>
 
           {/* Submit */}

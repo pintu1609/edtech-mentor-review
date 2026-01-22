@@ -7,8 +7,6 @@ if (!MONGODB_URI) {
 }
 
 declare global {
-  // only for Node.js
-  // eslint-disable-next-line no-var
   var mongoose: {
     conn: Mongoose | null;
     promise: Promise<Mongoose> | null;

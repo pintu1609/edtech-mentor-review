@@ -107,69 +107,8 @@ const useGetAllMentor = () => {
   });
 };
 
-// const updateRegisterUser = async (params: UpdateRegisterUser) => {
-//   const { data } = await axiosInstance({
-//     method: "put",
-//     url: `${ENDPOINTS.USER}${params.id}`,
-//     data: params.data,
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   });
-
-//   const statusSchema = z.number().optional();
-//   const messageSchema = z.string().optional();
-//   const status = statusSchema.parse(data.status);
-//   const message = messageSchema.parse(data.message);
-//   const dataSchema = z.object({
-//     name: z.string(),
-//     email: z.string(),
-//     role: z.string(),
-//   });
-
-//   const retData = dataSchema.parse(data.data);
-
-//   return { status, message, data: retData };
-// };
-
-// const useUpdateRegisterUser = () => {
-//   return useMutation({
-//     mutationKey: ["useUpdateRegisterUser"],
-//     mutationFn: (params: UpdateRegisterUser) => updateRegisterUser(params),
-//   });
-// };
-
-// const deletRegisterUser = async (id: string | number) => {
-//   const { data } = await axiosInstance({
-//     method: "delete",
-//     url: `${ENDPOINTS.USER}${id}`,
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   });
-
-//   const statusSchema = z.number().optional();
-//   const messageSchema = z.string().optional();
-//   const status = statusSchema.parse(data.status);
-//   const message = messageSchema.parse(data.message);
-//   return { status, message };
-// };
-
-// const useDeleteRegisterUser = (onSuccess?: () => void) => {
-//   return useMutation({
-//     mutationKey: ["useDeleteRegisterUser"],
-//     mutationFn: (id: string | number) => deletRegisterUser(id),
-//     onSuccess: () => {
-//       onSuccess?.();
-//     },
-//   });
-// };
-
 export {
   useLogin,
   useRegister,
   useGetAllMentor,
-//   useGetAllUser,
-//   useUpdateRegisterUser,
-//   useDeleteRegisterUser,
 };

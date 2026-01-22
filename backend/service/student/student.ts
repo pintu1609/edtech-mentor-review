@@ -2,16 +2,13 @@ import { Assignment } from "@/backend/model/assignment/assignment";
 import { Submission } from "@/backend/model/submission/submission";
 import mongoose from "mongoose";
 
-
 export const getAssignments = async (studentId: string) => {
   const submittedAssignmentIds = await Submission.find(
     { studentId },
-    { assignmentId: 1 }
+    { assignmentId: 1 },
   ).lean();
 
-  const submittedIds = submittedAssignmentIds.map(
-    (s) => s.assignmentId
-  );
+  const submittedIds = submittedAssignmentIds.map((s) => s.assignmentId);
 
   const assignments = await Assignment.find({
     isDeleted: false,
@@ -53,7 +50,6 @@ export const submit = async (studentId: string, data: any) => {
   };
 };
 
-
 export const getSubmissions = async (studentId: string) => {
   if (!mongoose.Types.ObjectId.isValid(studentId)) {
     return { length: 0, data: [] };
@@ -62,14 +58,12 @@ export const getSubmissions = async (studentId: string) => {
   const now = new Date();
 
   const data = await Submission.aggregate([
-    // 1️⃣ Match student
     {
       $match: {
         studentId: new mongoose.Types.ObjectId(studentId),
       },
     },
 
-    // 2️⃣ Lookup assignment
     {
       $lookup: {
         from: "assignments",
@@ -80,10 +74,8 @@ export const getSubmissions = async (studentId: string) => {
     },
     { $unwind: "$assignment" },
 
-    // 3️⃣ Remove deleted assignments
     { $match: { "assignment.isDeleted": false } },
 
-    // 4️⃣ Compute assignmentsStatus
     {
       $addFields: {
         "assignment.assignmentsStatus": {
@@ -91,18 +83,13 @@ export const getSubmissions = async (studentId: string) => {
             { $eq: ["$assignment.isDeleted", true] },
             "deleted",
             {
-              $cond: [
-                { $gt: [now, "$assignment.dueDate"] },
-                "closed",
-                "open",
-              ],
+              $cond: [{ $gt: [now, "$assignment.dueDate"] }, "closed", "open"],
             },
           ],
         },
       },
     },
 
-    // 5️⃣ Lookup mentor (IMPORTANT)
     {
       $lookup: {
         from: "users",
@@ -118,13 +105,14 @@ export const getSubmissions = async (studentId: string) => {
       },
     },
 
-    // 6️⃣ Clean response shape
     {
       $project: {
         assignmentId: 1,
         studentId: 1,
         content: 1,
         status: 1,
+        score: 1,
+        feedback: 1,
         createdAt: 1,
         updatedAt: 1,
 
@@ -153,14 +141,11 @@ export const getSubmissions = async (studentId: string) => {
   };
 };
 
-
 export const getStats = async (studentId: string) => {
-  // 1️⃣ Total active assignments
   const totalAssignments = await Assignment.countDocuments({
     isDeleted: false,
   });
 
-  // 2️⃣ Submissions ONLY for non-deleted assignments
   const submissionStats = await Submission.aggregate([
     {
       $match: {
@@ -212,9 +197,11 @@ export const getStats = async (studentId: string) => {
   };
 };
 
-
-
-export const updateSubmission = async (id: string, studentId: string, data: any) => {
+export const updateSubmission = async (
+  id: string,
+  studentId: string,
+  data: any,
+) => {
   const submission = await Submission.findOne({
     _id: id,
     studentId,
@@ -234,12 +221,11 @@ export const updateSubmission = async (id: string, studentId: string, data: any)
       studentId,
     },
     data,
-    { new: true }
+    { new: true },
   );
 
   return {
     success: true,
     data: updatedSubmission,
   };
-};        
-  
+};

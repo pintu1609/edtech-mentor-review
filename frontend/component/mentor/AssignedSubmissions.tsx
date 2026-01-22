@@ -5,7 +5,9 @@ import { useMentorAllAssignments } from "@/frontend/hooks/mentor";
 import { ClipLoader } from "react-spinners";
 import ViewSubmissionModal from "./ViewSubmissionModal";
 
-export default function AssignedSubmissions() {
+export default function AssignedSubmissions({ mentorStatRefetch }: {
+  mentorStatRefetch: () => void
+}) {
   const { data, isPending, refetch:mentorRefetch } = useMentorAllAssignments();
   const [open, setOpen] = useState(false);
   const [submission, setSubmission] = useState<any>(null);
@@ -67,7 +69,12 @@ export default function AssignedSubmissions() {
                         setSubmission(s);
                         setOpenView(true);
                       }}
-                      className="px-3 py-1 text-xs rounded bg-indigo-600 text-white"
+                      className=" px-3 py-1 text-xs rounded
+        border border-gray-300
+        text-gray-700
+        bg-gray-400
+        hover:bg-gray-500
+        transition"
                     >
                       View
                     </button>
@@ -93,6 +100,7 @@ export default function AssignedSubmissions() {
         submission={submission}
         onClose={() => setOpen(false)}
         mentorRefetch={mentorRefetch}
+        mentorStatRefetch={mentorStatRefetch}
       />
       )}
 

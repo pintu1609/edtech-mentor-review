@@ -1,4 +1,3 @@
-// app/dashboard/admin/components/StatCard.tsx
 export default function StatCard({
   title,
   value,

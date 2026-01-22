@@ -11,11 +11,15 @@ export default function SubmitAssignmentModal({
   assignmentId,
   onClose,
   refetch,
+  refetchSubmission,
+  refetchStats
 }: {
   open: boolean;
   assignmentId: string;
   onClose: () => void;
   refetch: () => void;
+  refetchSubmission: () => void;
+  refetchStats: () => void;
 }) {
 
   if (!open) return null;
@@ -39,6 +43,8 @@ const { mutateAsync, isPending } = useSubmitAssignment();
             resetForm();
             onClose();
             refetch();
+            refetchSubmission();
+            refetchStats();
 
           } else if (success.status === 400) {
             toast.error("Assignment already submitted");

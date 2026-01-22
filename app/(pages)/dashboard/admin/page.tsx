@@ -19,7 +19,6 @@ export default function AdminDashboard() {
 
   return (
     <div className=" min-h-screen bg-gradient-to-br from-slate-100 to-slate-200">
-      {/* <Sidebar /> */}
 
       <div className="flex-1 space-y-6 p-4">
         <h2 className="text-center text-2xl text-gray-600 text-bold"> Admin Dashboard</h2>
@@ -40,8 +39,8 @@ export default function AdminDashboard() {
         </div>
 
         {/* Bottom */}
-        {mentorData && <MentorOverview mentorData={mentorData} mentorIsPending={mentorIsPending} />}   
-           </div>
+        {mentorData && <MentorOverview mentorData={mentorData} mentorIsPending={mentorIsPending} />}
+      </div>
       {open &&
         <CreateAssignmentModal open={open} onClose={() => setOpen(false)} refetch={refetch} mentorRefetch={mentorRefetch} />
       }

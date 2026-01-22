@@ -13,7 +13,9 @@ export default function ViewSubmissionModal({
     mentorName: string;
     content: string;
     status: string;
-    updatedAt: string;
+    score?: number;
+    feedback?: string;
+    updatedAt: string ;
   };
 }) {
   if (!open) return null;
@@ -59,7 +61,26 @@ export default function ViewSubmissionModal({
               {data.content}
             </div>
           </div>
+          {data?.status === "reviewed" && (
+            <>
+              <div>
+                <p className="text-gray-500">Mentor Feedback</p>
+                <div className="mt-1 p-3 rounded-lg border bg-green-50 whitespace-pre-wrap">
+                  {data?.feedback || "—"}
+                </div>
+              </div>
 
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-gray-500">Score</p>
+                  <p className="font-semibold text-lg">
+                    {data?.score ?? "—"}
+                  </p>
+                </div>
+
+              </div>
+            </>
+          )}
           
         </div>
 

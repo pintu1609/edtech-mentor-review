@@ -4,7 +4,10 @@ import SubmitAssignmentModal from "./assignmentModal/SubmitAssignmentModal";
 import { useStudentAllAssignments } from "@/frontend/hooks/student";
 import { ClipLoader } from "react-spinners";
 
-export default function AssignmentsTable() {
+export default function AssignmentsTable({refetchSubmission,refetchStats}:{
+  refetchSubmission:()=>void,
+  refetchStats:()=>void
+}) {
   const { data , isPending, refetch  } = useStudentAllAssignments();
   const [open, setOpen] = useState(false);
   const [assignmentId, setAssignmentId] = useState<string | null>(null);
@@ -77,6 +80,8 @@ export default function AssignmentsTable() {
         assignmentId={assignmentId}
         onClose={() => setOpen(false)}
         refetch={refetch}
+        refetchSubmission={refetchSubmission}
+        refetchStats={refetchStats}
       />
       </div>}
     </>

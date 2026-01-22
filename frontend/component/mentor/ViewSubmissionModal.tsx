@@ -89,7 +89,7 @@ export default function ViewSubmissionModal({
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+            className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-200"
           >
             Close
           </button>

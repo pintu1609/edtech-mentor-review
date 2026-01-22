@@ -122,6 +122,8 @@ mentor:z.object({
   studentId: z.string(),
   content: z.string(),
   status: z.string(),
+  score: z.number().optional(),
+  feedback: z.string().optional(),
   
   
 });

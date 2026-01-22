@@ -120,6 +120,8 @@ const dataSchema = z.object({
   }),
   content: z.string(),
   status: z.string(),
+  feedback: z.string().optional(),
+  score: z.number().optional(),
   
   
 });

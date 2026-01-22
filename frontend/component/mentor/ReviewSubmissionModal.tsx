@@ -1,6 +1,4 @@
 "use client";
-// import { useState } from "react";
-// import axios from "@/frontend/service/axios";
 import { useSubmitAssignment } from "@/frontend/hooks/student";
 import { useFormik } from "formik";
 import { initialAssignmentMentorReview, assignmentMentorReviewValidationSchema } from "@/frontend/frontValidation";
@@ -13,26 +11,19 @@ export default function ReviewSubmissionModal({
   open,
   submission,
   onClose,
-  mentorRefetch
+  mentorRefetch,
+  mentorStatRefetch
 
 }: {
   open: boolean;
   submission: any;
   onClose: () => void;
   mentorRefetch: () => void;
+  mentorStatRefetch: () => void
 }) {
 
 
   if (!open || !submission) return null;
-
-  // const submit = async () => {
-  //   await axios.patch("/api/mentor/review", {
-  //     submissionId: submission._id,
-  //     feedback,
-  //     score,
-  //   });
-  //   onClose();
-  // };
 
   const { mutateAsync, isPending } = useReviewSubmission();
 
@@ -54,6 +45,7 @@ export default function ReviewSubmissionModal({
             resetForm();
             onClose();
             mentorRefetch();
+            mentorStatRefetch();
 
           } else if (success.status === 400) {
             toast.error("Assignment already submitted");
@@ -73,12 +65,9 @@ export default function ReviewSubmissionModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
-      {/* Modal */}
       <div className="relative bg-white/90 backdrop-blur-xl p-6 rounded-2xl w-full max-w-lg shadow-xl">
-        {/* 🔹 Header Context */}
         <div className="mb-4 border-b pb-3 space-y-1">
           <h2 className="font-semibold text-lg">
             Review Submission
@@ -94,12 +83,10 @@ export default function ReviewSubmissionModal({
             {submission.assignmentId?.title}
           </p>
 
-          {/* {submission.assignmentId?.description && ( */}
           <p className="text-sm text-gray-600">
             <span className="font-medium">Description:</span>{" "}
             {submission.assignmentId?.description}
           </p>
-          {/* )} */}
 
           <p className="text-xs text-gray-500">
             Due date:{" "}
@@ -113,7 +100,6 @@ export default function ReviewSubmissionModal({
           </p>
         </div>
 
-        {/* 📝 Submission Content */}
         <div className="mb-4">
           <p className="text-sm font-medium mb-1">Student Submission</p>
           <div className="rounded-lg border bg-gray-50 p-3 text-sm whitespace-pre-wrap">
@@ -135,7 +121,6 @@ export default function ReviewSubmissionModal({
             name="feedback"
           />
 
-          {/* Score */}
           <input
             type="number"
             className={`w-full border rounded-lg p-2 mb-4 text-sm focus:outline-none focus:ring-none ${touched.score && errors.score ? "border-red-500" : ""
@@ -147,7 +132,6 @@ export default function ReviewSubmissionModal({
             name="score"
           />
 
-          {/* Actions */}
           <div className="flex justify-end gap-3">
             <button
               onClick={onClose}

@@ -1,4 +1,3 @@
-// backend/model/submission.ts
 import mongoose, { Schema, models } from "mongoose";
 
 const SubmissionSchema = new Schema(

@@ -1,4 +1,3 @@
-// backend/service/admin.ts
 import { Assignment } from "@/backend/model/assignment/assignment";
 import { Submission } from "@/backend/model/submission/submission";
 import { User } from "@/backend/model/auth/auth";
@@ -14,18 +13,19 @@ export const createAssignment = async (adminId: string, data: any) => {
   return assignment;
 };
 
-export const getAssignments = async() => {
-  const assignemntData=await Assignment.find().populate({
-  path: "mentor",
-  select: "-password",}).populate(
-  { path: "createdBy", select: "-password",})
+export const getAssignments = async () => {
+  const assignemntData = await Assignment.find()
+    .populate({
+      path: "mentor",
+      select: "-password",
+    })
+    .populate({ path: "createdBy", select: "-password" });
 
   return {
     length: assignemntData.length,
     data: assignemntData,
   };
-
-}
+};
 
 export const getSubmissions = async () => {
   const submissions = await Submission.find()
@@ -49,7 +49,6 @@ export const getSubmissions = async () => {
   };
 };
 
-
 export const getStats = async () => ({
   assignments: await Assignment.countDocuments(),
   submissions: await Submission.countDocuments(),
@@ -62,13 +61,11 @@ export const getMentors = async () => {
 
   const data = await Promise.all(
     mentors.map(async (mentor) => {
-      // 1️⃣ Total assignments assigned to mentor
       const totalAssignments = await Assignment.countDocuments({
         mentor: mentor._id,
         isDeleted: false,
       });
 
-      // 2️⃣ Submission-based stats (via assignment → mentor)
       const stats = await Submission.aggregate([
         {
           $lookup: {
@@ -118,7 +115,7 @@ export const getMentors = async () => {
         reviewed: stats[0]?.reviewed ?? 0,
         pending: stats[0]?.pending ?? 0,
       };
-    })
+    }),
   );
 
   return {
@@ -127,12 +124,11 @@ export const getMentors = async () => {
   };
 };
 
-
-
-export const Delete= async(id:string)=>{
-  const deletedAssignment= await dal.findOneAndUpdate(Assignment,{ _id: id },          // filter
-    { isDeleted: true }  )
-     return deletedAssignment;
-
-
-}
+export const Delete = async (id: string) => {
+  const deletedAssignment = await dal.findOneAndUpdate(
+    Assignment,
+    { _id: id }, // filter
+    { isDeleted: true },
+  );
+  return deletedAssignment;
+};

@@ -15,7 +15,7 @@ export const createUser = async (req: NextRequest) => {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     } else {
-      // handle unknown error type
+console.log(error);
     }
   }
 };
@@ -41,8 +41,8 @@ export const userLogin = async (req: NextRequest) => {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     } else {
-      // handle unknown error type
-    }
+console.log(error);   
+ }
   }
 };
 

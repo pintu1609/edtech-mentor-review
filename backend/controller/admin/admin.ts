@@ -1,4 +1,3 @@
-// backend/controller/admin.ts
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/backend/lib/authorization";
 import * as service from "@/backend/service/admin/admin";
@@ -18,8 +17,6 @@ export const createAssignment = async (req: NextRequest) => {
   } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
-    } else {
-      // handle unknown error type
     }
   }
 };
