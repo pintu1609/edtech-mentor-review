@@ -25,7 +25,7 @@ const createAssignment = async (params: createAssignmentParams) => {
   const dataSchema = z.object({
     title: z.string(),
     description: z.string(),
-    // mentor: z.string(),
+
     dueDate: z.string(),
     _id: z.string(),
    
@@ -69,12 +69,13 @@ const dataSchema = z.object({
     name: z.string(),
     email: z.string(),
   }).optional(),
-  
+isDeleted:z.boolean(),  
+assignmentsStatus:z.string()
 });
 
 const userData = z.array(dataSchema);
-  const retData = userData.parse(data.data);
-  return { status, message, data: retData };
+  const retData = userData.parse(data.data.data);
+  return { status, message, data: retData,length:data.data.length };
 };
 
 const useAdminAllAssignments = () => {
@@ -124,8 +125,8 @@ const dataSchema = z.object({
 });
 
 const userData = z.array(dataSchema);
-  const retData = userData.parse(data.data);
-  return { status, message, data: retData };
+  const retData = userData.parse(data.data.data);
+  return { status, message, data: retData,length:data.data.length };
 };
 
 const useRecentSubmission = () => {
@@ -154,14 +155,17 @@ const fetchMentorOverview = async () => {
 const dataSchema = z.object({
   id: z.string(),
   name: z.string(),
-  students: z.number(),
+  totalAssignments: z.number(),
+  totalSubmissions: z.number(),
+  totalStudents: z.number(),
+  reviewed: z.number(),
   pending: z.number(),
   
 });
 
 const userData = z.array(dataSchema);
-  const retData = userData.parse(data.data);
-  return { status, message, data: retData };
+  const retData = userData.parse(data.data.data);
+  return { status, message, data: retData,length:data.data.length };
 };
 
 const useMentorOverview = () => {
@@ -200,4 +204,32 @@ const useAdminStats = () => {
   });
 };
 
-export { useAdminStats, useCreateAssignment,useAdminAllAssignments, useRecentSubmission,useMentorOverview };
+
+// delete assignement
+const deleteAssignment = async (id: string | number) => {
+  const { data } = await axiosInstance({
+    method: "delete",
+    url: `${ENDPOINTS.DELETEASSIGNMENT}${id}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const statusSchema = z.number().optional();
+  const messageSchema = z.string().optional();
+  const status = statusSchema.parse(data.status);
+  const message = messageSchema.parse(data.message);
+  return { status, message };
+};
+
+const useDeleteAssignment = (onSuccess?: () => void) => {
+  return useMutation({
+    mutationKey: ["useDeleteAssignment"],
+    mutationFn: (id: string | number) => deleteAssignment(id),
+    onSuccess: () => {
+      onSuccess?.();
+    },
+  });
+};
+
+export { useAdminStats, useCreateAssignment,useAdminAllAssignments, useRecentSubmission,useMentorOverview,useDeleteAssignment };

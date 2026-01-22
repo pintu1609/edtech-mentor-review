@@ -9,6 +9,7 @@ const ENDPOINTS = {
     GETASSIGNMENTS:"/api/admin/assignment",
     GETRECENTSUBMISSION:"/api/admin/submissions",
     GETMENTOROVERVIEW:"/api/admin/mentors",
+    DELETEASSIGNMENT:'/api/admin/assignment/',
     //STUDNT
     VIEWASSIGNEMNT:"/api/student/assignments",
     SUBMITASSIGNMENT:"/api/student/submit",

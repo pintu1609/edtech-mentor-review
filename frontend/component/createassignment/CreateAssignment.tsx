@@ -10,13 +10,16 @@ import { useGetAllMentor } from "@/frontend/hooks/user";
 export default function CreateAssignmentModal({
   open,
   onClose,
+  refetch,
+  mentorRefetch,
 }: {
   open: boolean;
   onClose: () => void;
+  refetch: () => void;
+  mentorRefetch: () => void;
 }) {
   const { mutateAsync, isPending } = useCreateAssignment();
   const {data}=useGetAllMentor();
-  console.log("🚀 ~ CreateAssignmentModal ~ data:", data)
   const { values, errors, touched, handleBlur, handleChange, handleSubmit, resetForm } = useFormik({
     initialValues: initialAssignment,
     validationSchema: toFormikValidationSchema(assignmentValidationSchema),
@@ -24,7 +27,6 @@ export default function CreateAssignmentModal({
 
       try {
         const success = await mutateAsync(values);
-        console.log("🚀 ~ Home ~ success:", success)
         if (success) {
 
           toast.success(success.message ?? "assignment successful !!");
@@ -32,6 +34,8 @@ export default function CreateAssignmentModal({
           if (success.status === 201) {
             resetForm();
             onClose();
+            refetch();
+            mentorRefetch();
 
           } else {
             toast.error("something went wrong");

@@ -1,4 +1,4 @@
-import { email, z } from "zod";
+import {  z } from "zod";
 
 export const assignmentSchema = z.object({
     title: z.string().min(3).max(30).nonempty("title is required"),

@@ -6,15 +6,14 @@ import { assignmentSchema } from "@/backend/validation/assignment/assignemnt";
 import { connectToDatabase } from "@/backend/lib/db";
 export const createAssignment = async (req: NextRequest) => {
   try {
-
-  const user = verifyToken(req,["admin"]);
-  const body = await req.json();
+    const user = verifyToken(req, ["admin"]);
+    const body = await req.json();
     const assignmentData = assignmentSchema.parse(body);
- const result= await service.createAssignment(user.id, assignmentData)
- return NextResponse.json({
+    const result = await service.createAssignment(user.id, assignmentData);
+    return NextResponse.json({
       status: 201,
       message: "Assignment created successfully",
-      data: result
+      data: result,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -22,75 +21,90 @@ export const createAssignment = async (req: NextRequest) => {
     } else {
       // handle unknown error type
     }
-  }};
+  }
+};
 
-export const getAssignments = async () =>{
+export const getAssignments = async () => {
   try {
-     await connectToDatabase();
+    await connectToDatabase();
     const data = await service.getAssignments();
     return NextResponse.json({
       status: 201,
       message: "Assignments fetched successfully",
-      data: data
+      data: data,
     });
   } catch (error) {
     console.log(error);
-  return NextResponse.json(
+    return NextResponse.json(
       {
         message: "Failed to fetch assignments",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
 
-
-export const getSubmissions = async () =>{
-  try
-  {
+export const getSubmissions = async () => {
+  try {
     await connectToDatabase();
-    const result =await service.getSubmissions();
+    const result = await service.getSubmissions();
     return NextResponse.json({
       status: 201,
       message: "Submissions fetched successfully",
-      data: result
-    })
-
-  }
-  catch(error)
-  {
+      data: result,
+    });
+  } catch (error) {
     console.log(error);
     return NextResponse.json(
       {
         message: "Failed to fetch assignments",
       },
-      { status: 500 }
-    )
+      { status: 500 },
+    );
   }
-}
+};
 
-export const getStats = async () =>
-  NextResponse.json(await service.getStats());
+export const getStats = async () => NextResponse.json(await service.getStats());
 
-export const getMentors = async () =>{
-  try
-  {
+export const getMentors = async () => {
+  try {
     await connectToDatabase();
-    const result = await service.getMentors()
+    const result = await service.getMentors();
     return NextResponse.json({
       status: 201,
       message: "Mentors fetched successfully",
-      data: result
-    })
-  }
-  catch(error)
-  {
+      data: result,
+    });
+  } catch (error) {
     console.log(error);
     return NextResponse.json(
       {
         message: "Failed to fetch assignments",
       },
-      { status: 500 }
-    )
+      { status: 500 },
+    );
   }
-}
+};
+
+export const deleteAssignment = async (req: NextRequest, id: string) => {
+  try {
+    await connectToDatabase();
+    verifyToken(req, ["admin"]);
+    if (!id) {
+      return NextResponse.json(
+        { error: "Assignment id is required" },
+        { status: 400 },
+      );
+    }
+    const result = await service.Delete(id);
+    return NextResponse.json({
+      status: 201,
+      message: "Assignment Deleted successfully",
+      data: result,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+  }
+};

@@ -1,13 +1,24 @@
 "use client";
 
+import { Trash } from "lucide-react";
+import { BeatLoader, ClipLoader } from "react-spinners";
+import { useDeleteAssignment } from "@/frontend/hooks/admin";
 
-// const assignments = [
-//   { id: "A1", title: "React Basics", mentor: "Rahul", students: 18, status: "Active" },
-//   { id: "A2", title: "Node API Design", mentor: "Priya", students: 27, status: "Closed" },
-// ];
+export default function AssignmentsTable({ open, setOpen, assignments, isPending, refetch }: any) {
+  const { mutateAsync: deleteAssignment, isPending: isDeleting } = useDeleteAssignment();
+  const handleAssignmentDelete = async (id: string) => {
+    try {
+      const ok = window.confirm(
+        "Are you sure you want to delete this assignment? This action cannot be undone."
+      );
 
-export default function AssignmentsTable({ open, setOpen, assignments }: any) {
-
+      if (!ok) return;
+      await deleteAssignment(id);
+      refetch()
+    } catch (err) {
+      console.error("Delete failed", err);
+    }
+  };
   return (
     <>
       <div className="relative backdrop-blur-xl bg-white/70 rounded-2xl p-5 shadow-lg border border-white/40">
@@ -30,43 +41,80 @@ export default function AssignmentsTable({ open, setOpen, assignments }: any) {
             + Create Assignment
           </button>
         </div>
+        {isPending ? (
+          <div className="flex justify-center">
+            <ClipLoader size={50} />
+          </div>
+        ) : (
 
-        <table className="w-full text-sm">
-          <thead className="text-gray-500">
-            <tr>
-              <th className="text-left">S.no</th>
-              <th className="text-center">Title</th>
-              <th className="text-center">Mentor</th>
-              <th className="text-center">DueDate</th>
-              <th className="text-center">Status</th>
-            </tr>
-          </thead>
+          assignments?.data.length > 0 ? (
 
-          <tbody>
-            {assignments?.data.map((assignment: any, index: number) => (
-              <tr key={assignment._id} className="border-t h-12 hover:bg-white/40">
-                <td>{index + 1}</td>
-                <td className="text-center">{assignment.title}</td>
-                <td className="text-center">{assignment?.mentor?.name ?? "-"}</td>
-                <td className="text-center">{new Date(assignment.dueDate).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}</td>
-                <td className="text-center">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs ${assignment.status === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-200"
-                      }`}
-                  >
-                    {assignment.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+
+            <table className="w-full text-sm">
+              <thead className="text-gray-500">
+                <tr>
+                  <th className="text-left">S.no</th>
+                  <th className="text-center">Title</th>
+                  <th className="text-center">Mentor</th>
+                  <th className="text-center">DueDate</th>
+                  <th className="text-center">Status</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {assignments?.data.map((assignment: any, index: number) => (
+                  <tr key={assignment._id} className="border-t h-12 hover:bg-white/40">
+                    <td>{index + 1}</td>
+                    <td className="text-center">{assignment.title}</td>
+                    <td className="text-center">{assignment?.mentor?.name ?? "-"}</td>
+                    <td className="text-center">{new Date(assignment.dueDate).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}</td>
+
+                    <td className="text-center">
+                      {assignment.isDeleted ? (
+                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                          Deleted
+                        </span>
+                      ) : (
+                        <div className="flex items-center justify-center gap-3">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-semibold
+          ${assignment.assignmentsStatus === "open"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-yellow-100 text-yellow-700"
+                              }`}
+                          >
+                            {assignment.assignmentsStatus}
+                          </span>
+
+                          <button
+                            onClick={() => {
+                              handleAssignmentDelete(assignment._id)
+                            }}
+                            className="text-red-500 hover:text-red-700 transition"
+                            title="Delete Assignment"
+                          >
+                            {isDeleting ? (
+                              <BeatLoader size={14} />
+                            ) : (
+                              <Trash size={18} />
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </td>
+
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-2xl text-center text-gray-500">No assignments found</p>
+          ))}
       </div>
 
     </>

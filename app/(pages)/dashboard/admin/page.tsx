@@ -4,7 +4,7 @@ import CreateAssignmentModal from "@/frontend/component/createassignment/CreateA
 import MentorOverview from "@/frontend/component/mentoroverview/MentorOverview";
 import RecentSubmissions from "@/frontend/component/recentsubmission/RecentSubmissions";
 import StatCard from "@/frontend/component/statcard/StatCard";
-import {useAdminStats,useAdminAllAssignments} from "@/frontend/hooks/admin";
+import { useAdminStats, useAdminAllAssignments, useMentorOverview } from "@/frontend/hooks/admin";
 import { useState } from "react";
 
 
@@ -12,8 +12,11 @@ import { useState } from "react";
 export default function AdminDashboard() {
   const [open, setOpen] = useState(false);
   const { data } = useAdminStats();
-  const { data: assignments } = useAdminAllAssignments();
-  console.log("🚀 ~ AdminDashboard ~ assignments:", assignments)
+  const { data: assignments, isPending, refetch } = useAdminAllAssignments();
+  const { data: mentorData, refetch: mentorRefetch, isPending: mentorIsPending } = useMentorOverview();
+  console.log("🚀 ~ AdminDashboard ~ mentorIsPending:", mentorIsPending)
+  console.log("🚀 ~ AdminDashboard ~ mentorData:", mentorData)
+
   return (
     <div className=" min-h-screen bg-gradient-to-br from-slate-100 to-slate-200">
       {/* <Sidebar /> */}
@@ -31,16 +34,16 @@ export default function AdminDashboard() {
         {/* Middle */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <AssignmentsTable open={open} setOpen={setOpen} assignments={assignments}/>
+            <AssignmentsTable open={open} setOpen={setOpen} assignments={assignments} isPending={isPending} refetch={refetch} />
           </div>
           <RecentSubmissions />
         </div>
 
         {/* Bottom */}
-        <MentorOverview />
-      </div>
+        {mentorData && <MentorOverview mentorData={mentorData} mentorIsPending={mentorIsPending} />}   
+           </div>
       {open &&
-     <CreateAssignmentModal open={open} onClose={() => setOpen(false)} />
+        <CreateAssignmentModal open={open} onClose={() => setOpen(false)} refetch={refetch} mentorRefetch={mentorRefetch} />
       }
 
     </div>

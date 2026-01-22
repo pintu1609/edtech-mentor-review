@@ -5,12 +5,22 @@ const submissions = [
 ];
 
 import { useRecentSubmission } from "@/frontend/hooks/admin";
+import { ClipLoader } from "react-spinners";
+import { is } from "zod/locales";
 export default function RecentSubmissions() {
-  const {data} = useRecentSubmission();
-  console.log("🚀 ~ RecentSubmissions ~ data:", data)
+  const {data , isPending} = useRecentSubmission();
   return (
+
     <div className="backdrop-blur-xl bg-white/70 rounded-2xl p-5 shadow-lg border border-white/40">
       <h3 className="font-semibold mb-4">Recent Submissions</h3>
+      { isPending ? (
+        <div className="flex justify-center">
+          <ClipLoader size={50}/>
+        </div>
+      ):(
+        data?.length > 0 ? (
+          
+       
 
       <div className="space-y-3">
         {data?.data?.map((s, i) => (
@@ -28,6 +38,11 @@ export default function RecentSubmissions() {
           </div>
         ))}
       </div>
+       ):(
+        <p className="text-center text-gray-500">No recent submissions</p>
+       )
+      )}
+
     </div>
   );
 }
