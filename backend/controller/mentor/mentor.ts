@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/backend/lib/authorization";
 import * as service from "@/backend/service/mentor/mentor";
 import { connectToDatabase } from "@/backend/lib/db";
+import { assignmentMentorReviewSchema } from "@/backend/validation/review/review";
 
 export const getSubmissions = async (req: NextRequest) => {
   try {
@@ -34,8 +35,8 @@ export const review = async (req: NextRequest) => {
      const user = verifyToken(req, ["mentor"]);
 
   const body = await req.json();
-  console.log("🚀 ~ review ~ body:", body)
-  const result = await service.review(user.id, body);
+const  bodyData = assignmentMentorReviewSchema.parse(body);    
+  const result = await service.review(user.id, bodyData);
   if (!result.success) {
     return NextResponse.json(
       { message: result.message, status: 400 },

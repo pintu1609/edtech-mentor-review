@@ -1,36 +1,153 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EdTech Assignment Management System
 
-## Getting Started
+A full-stack **role-based EdTech platform** where **Admins**, **Mentors**, and **Students** collaborate through assignments, submissions, and reviews.
 
-First, run the development server:
+Built with **Next.js App Router**, **MongoDB**, **JWT authentication**, and **role-based access control (RBAC)**.
 
-```bash
+---
+
+## Features
+
+### Student
+- View available assignments (auto-filtered)
+- Submit assignment (only once per assignment)
+- Edit submission before deadline and Review
+- View mentor feedback & score
+- Track submission status (submitted / reviewed)
+
+### Mentor
+- View assigned student submissions
+- Review submissions (feedback + score)
+- View reviewed submissions
+- Mentor dashboard statistics
+
+### Admin
+- Create, update, and soft-delete assignments
+- Assign mentors to assignments
+- View mentor & student overview
+- Platform-wide statistics dashboard
+
+---
+
+## Authentication & Authorization
+
+- JWT-based authentication
+- Role-based access control (RBAC)
+- Protected routes using **Next.js `proxy` middleware**
+- Automatic redirection for unauthorized access
+
+### Supported Roles
+- `admin`
+- `mentor`
+- `student`
+
+---
+
+## Tech Stack
+
+### Frontend
+- Next.js 16 (App Router)
+- React + TypeScript
+- Tailwind CSS
+- React Query
+- Zod + Formik
+- Lucide Icons
+
+### Backend
+- Next.js Route Handlers
+- MongoDB + Mongoose
+- JWT Authentication
+- Aggregation pipelines
+- Soft delete pattern (`isDeleted`)
+
+
+
+
+##  Core Business Logic
+
+### Assignment Status
+- `open` → before due date
+- `closed` → after due date
+- `deleted` → soft-deleted (`isDeleted: true`)
+
+### Submission Rules
+- A student can submit **only once per assignment**
+- Editing allowed only if:
+  - assignment is `open`
+  - submission status is `submitted`
+
+### Mentor Review Rules
+- Mentor can review **only assignments assigned to them**
+- Mentor ownership verified via `Assignment → mentorId`
+
+---
+
+## API Endpoints
+
+### Student
+- `GET /api/student/assignments`
+- `POST /api/student/submit`
+- `PUT /api/student/submit/:id`
+- `GET /api/student/submissions`
+- `GET /api/student/stats`
+
+### Mentor
+- `GET /api/mentor/submissions`
+- `PATCH /api/mentor/review`
+- `GET /api/mentor/stats`
+
+### Admin
+- `POST /api/admin/assignment`
+- `DELETE /api/admin/assignment/:id`
+- `GET /api/admin/mentors`
+- `GET /api/admin/stats`
+
+---
+
+## Middleware Protection
+
+- Public routes: `/`, `/register`
+- Static assets allowed (`/_next`, `/images`, `/fonts`)
+- JWT validation for all protected routes
+- Role-based route access enforcement
+
+---
+
+## Run Locally
+
+
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## What This Project Demonstrates
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Real-world RBAC implementation
 
-## Learn More
+Clean service-controller architecture
 
-To learn more about Next.js, take a look at the following resources:
+Secure middleware design
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+MongoDB aggregation usage
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Production-ready full-stack patterns
 
-## Deploy on Vercel
+Interview-ready system design
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Author
+
+Pintu Kumar
+
+GitHub: https://github.com/pintu1609
+
+LinkedIn: https://www.linkedin.com/in/pintu-kumar-46b147204/
+
+## Environment Variables
+
+Create a `.env.local` file:
+
+```env
+DATABASE_URL=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+ACCESS_TOKEN_EXPIRY_DAY=2d

@@ -1,8 +1,8 @@
-// backend/controller/student.ts
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/backend/lib/authorization";
 import * as service from "@/backend/service/student/student";
 import { connectToDatabase } from "@/backend/lib/db";
+import { assignmentSubmissionSchema } from "@/backend/validation/submisson/submission";
 
 export const getAssignments = async (req:
   NextRequest
@@ -33,8 +33,11 @@ export const submit = async (req: NextRequest) => {
 
     const user = verifyToken(req, ["student"]);
     const body = await req.json();
+     const userData = assignmentSubmissionSchema.parse(body);
+    
+    console.log("🚀 ~ submit ~ body:", body)
 
-    const result = await service.submit(user.id, body);
+    const result = await service.submit(user.id, userData);
 
     if (!result.success) {
       return NextResponse.json(
@@ -107,9 +110,10 @@ export const editSubmission = async (req: NextRequest,id: string) => {
   try {
     await connectToDatabase();
     const user = verifyToken(req, ["student"]);
-    console.log("🚀 ~ editSubmission ~ user:", user)
     const body = await req.json();
-    const result = await service.updateSubmission(id, user.id, body);
+         const userData = assignmentSubmissionSchema.parse(body);
+
+    const result = await service.updateSubmission(id, user.id, userData);
     return NextResponse.json({
       status: 201,
       message: "Submission edited successfully",
